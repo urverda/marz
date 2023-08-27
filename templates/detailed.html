@@ -1,0 +1,106 @@
+<div class="detailedView filler">
+    <div class="panel panel-default detailed-control">
+        <div class="panel-heading" style="max-height: 41px">
+            <strong>ID</strong> {{getActive().id}}
+            <strong>NAME</strong> {{getActive().name}}
+            <strong ng-if="displayAuto()">AutoQOP</strong><h4 ng-if="displayAuto()" style="cursor: pointer; display: inline; margin-left: 10px;" ng-click="acceptAutoQOP()"><span class="{{getQOPLabel(getActive().autoQOP)}}">{{getAutoQOPText()}}</span></h4>
+            <strong>QOP</strong><h4 style="display: inline; margin-left: 10px;"><span class="label {{getActive().qopLabel}}">{{getQOPText()}}</span></h4>
+            <strong>COMMENT</strong><input type="text" style="width: 180px; margin-left: 20px; border-radius: 0;" ng-model-options="{ debounce: 300 }" ng-model="spectraComment" class="input-sm" ng-change="updateSpectraComment()" placeholder="Enter a comment" />
+            <strong>RA</strong> {{getActive().getRA().toFixed(3)}}
+            <strong>DEC</strong> {{getActive().getDEC().toFixed(3)}}
+            <strong>MAG</strong> {{getActive().magnitude.toFixed(2)}}
+            <strong>TYPE</strong> {{getActive().type}}
+        </div>
+        <ul class="list-group">
+            <li class="list-group-item form-inline">
+                <div class="form-group" ng-if="ui.merge">
+                    <div class="input-group input-group-sm">
+                        <div class="btn-group">
+                            <button class="btn btn-sm btn-default" btn-radio="$index" ng-click="selectMerge($index)" ng-model="settings.mergeIndex" ng-repeat="i in getMerges()"><strong>{{i.initials}}</strong><span style="margin-left: 5px; font-size: 1em; text-shadow: none;" class="label {{i.qopLabel}}"> {{i.z.toFixed(5)}} @ {{i.qop}}</span> </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group" style="height: 30px">
+                    <toggle-switch class="switch-success" style="width: 170px" ng-model="ui.dataSelection.processed" knob-label="Data" on-label="Processed" off-label="Raw"></toggle-switch>
+                </div>
+                <div class="form-group" style="height: 30px">
+                    <toggle-switch class="switch-danger" style="width: 170px" ng-model="ui.dataSelection.matched" knob-label="Template"></toggle-switch>
+                </div>
+                <div class="form-group" style="height: 30px">
+                    <toggle-switch class="switch-primary" style="width: 170px" ng-model="settings.continuum" knob-label="Continuum"></toggle-switch>
+                </div>
+                <div class="form-group" style="height: 30px">
+                    <toggle-switch class="switch-warning" style="width: 170px" ng-model="ui.dataSelection.variance" knob-label="Variance"></toggle-switch>
+                </div>
+                <div class="form-group">
+                    <div class="btn-group">
+                        <button class="btn btn-default btn-sm" ng-click="resetToAutomatic()" popover-placement="bottom" popover="Shortcut: shift+r" popover-trigger="mouseenter">Reset auto</button>
+                        <button class="btn btn-default btn-sm" ng-click="resetToManual()" popover-placement="bottom" popover="Shortcut: m" popover-trigger="mouseenter">Reset manual</button>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="input-group input-group-sm" style="width: 190px">
+                        <span class="input-group-addon">Smooth</span>
+                        <input type="text input-sm" class="form-control" ng-model="settings.smooth">
+                        <span class="input-group-addon"><input style="width:60px;" type="range" min="0" max="{{bounds.maxSmooth}}" ng-model="settings.smooth"></span>
+                    </div>
+                </div>
+                <div class="input-group input-group-sm" style="width: 16em;">
+                    <span class="input-group-addon">Range</span>
+                    <div class="btn-group">
+                        <button class="btn btn-sm btn-default" btn-radio="$index" ng-model="settings.rangeIndex" ng-repeat="i in getRanges() track by $index">{{i}}</button>
+                    </div>
+                </div>
+            </li>
+            <li class="list-group-item form-inline">
+                <div class="form-group">
+                    <div class="input-group input-group-sm" style="width: 17em;">
+                        <span class="input-group-addon">Top Results</span>
+                        <div class="btn-group" ng-if="showTopResults()">
+                            <button class="btn btn-sm btn-default" btn-radio="$index" ng-click="selectMatch(i)" ng-model="settings.matchedIndex" ng-repeat="i in getMatches() track by $index">{{$index + 1}}</button>
+                        </div>
+                        <span class="input-group-btn" ng-if="!hasMatchingDetails()">
+                            <button class="btn btn-block btn-default" ng-click="reanalyseSpectra(true)">Analyse spectra</button>
+                        </span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="input-group input-group-sm" style="width: 340px">
+                        <span class="input-group-addon">Template</span>
+                        <select class="form-control" id="templateInput" style="width: 265px" ng-model="settings.templateId" data-ng-options="t.id as t.id + ' - ' + t.name for t in getTemplatesList()"></select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="input-group input-group-sm" >
+                        <span class="input-group-addon" style="width: 50px">Offset</span>
+                        <input type="text" class="form-control" ng-model="settings.templateOffset" style="width: 45px">
+                        <span class="input-group-addon" style="width: 90px">
+                            <input  type="range" min="0" max="100" step="1" ng-model="settings.templateOffset">
+                        </span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="input-group input-group-sm" style="width:300px">
+                        <span class="input-group-addon">Redshift</span>
+                        <input type="text" id="redshiftInput" class="form-control" ng-change="changedRedshift()" ng-model="settings.redshift" style="color: red; font-weight: bold; font-size: 1.1em;">
+                        <span class="input-group-addon" style="width:150px"><input  type="range" min="{{settings.bounds.redshiftMin}}" max="{{settings.bounds.redshiftMax}}" step="0.0001" ng-change="changedRedshift()" ng-model="settings.redshift"></span>
+                    </div>
+                </div>
+                <button class="form-group btn btn-primary btn-sm" style="display: inline-block;" ng-click="fit()" popover-placement="bottom" popover="Performs localised cross correlation fit. Shortcut: u" popover-trigger="mouseenter">Perform Fit</button>
+            </li>
+            <li class="list-group-item form-inline">
+                <button class="form-group btn btn-primary btn-sm" style="display: inline-block;" ng-click="toggleSpectralLines()">{{getSpectralLinePhrase()}}</button>
+                <button class="form-group btn btn-info btn-sm" style="display: inline-block;" ng-click="previousSpectralLine()" popover-placement="bottom" popover="Shortcut: ," popover-trigger="mouseenter">Back</button>
+                <button class="form-group btn btn-info btn-sm" style="display: inline-block;" ng-click="nextSpectralLine()" popover-placement="bottom" popover="Shortcut: ." popover-trigger="mouseenter">Forward</button>
+                <ul class="form-group list-unstyled list-inline" ng-class="{glowing:isWaitingForSpectralLine()}">
+                    <li class="sline lined" ng-class="{bold:isBold(i)}" ng-click="clickSpectralLine(i.id)" ng-repeat="i in getSpectralLines() track by i.id" popover-placement="bottom" popover="{{i.shortcut}}" popover-trigger="mouseenter">
+                        {{i.label}}
+                    </li>
+                </ul>
+            </li>
+         </ul>
+    </div>
+    <div id="detailedCanvasParent" style="position: absolute; top: 165px; bottom: 0; left: 0; right: 0">
+        <canvas id="detailedCanvas" detailed-item></canvas>
+    </div>
+</div>

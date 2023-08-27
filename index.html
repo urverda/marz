@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Marz</title>
+    <link rel="shortcut icon" href="images/favicon.ico" />
+    <link href="css/loader.css" rel="stylesheet">
+    <link href="css/structure.css" rel="stylesheet">
+    <link href="css/common.css" rel="stylesheet">
+    <link href="css/layout.css" rel="stylesheet">
+    <link href="css/dialogs.css" rel="stylesheet">
+    <link href="css/angular-toggle-switch-bootstrap-3.css" rel="stylesheet">
+    <link href="css/non-responsive.css" rel="stylesheet">
+
+</head>
+<body ng-app="marz" style="background-color: #F9F9F9;">
+    <div class="splash" ng-cloak>
+        <div class="spinner"></div>
+    </div>
+    <script src="js/angularMethods.js"></script>
+    <script src="lib/jquery-2.1.1.js"></script>
+    <script src="lib/math.js"></script>
+    <script src="lib/jquery.scrollintoview.js"></script>
+    <script src="lib/lodash.min.js"></script>
+    <script src="lib/regression.js"></script>
+    <script src="js/config.js"></script>
+    <script src="js/extension.js"></script>
+    <script src="lib/dsp.js"></script>
+    <script src="js/helio.js"></script>
+
+    <script src="lib/FileSaver.js"></script>
+    <script src="lib/keyboard.js"></script>
+    <script src="js/spectralLines.js"></script>
+    <script src="js/methods.js"></script>
+    <script src="js/classes.js"></script>
+    <script src="lib/fits.js"></script>
+    <script src="js/templates.js"></script>
+
+    <script src="lib/angular.min.js"></script>
+    <script src="lib/angular-animate.min.js"></script>
+    <script src="lib/angular-sanitize.min.js"></script>
+    <script src="lib/angular-translate.min.js"></script>
+    <script src="lib/angular-ui-router.min.js"></script>
+    <script src="lib/ui-bootstrap-tpls-0.12.0.js"></script>
+    <script src="lib/angular-toggle-switch.min.js"></script>
+
+    <link href="css/bootstrap.css" rel="stylesheet">
+    <link href="css/bootstrap-theme.css" rel="stylesheet">
+    <link href="css/awesome-bootstrap-checkbox.css" rel="stylesheet">
+    <script src="lib/bootstrap.js"></script>
+    <script src="lib/dialogs.js"></script>
+
+    <script src="js/services.js"></script>
+    <script src="js/controllers.js"></script>
+    <script src="js/directives.js"></script>
+    <script src="js/router.js"></script>
+    <script src="js/app.js"></script>
+    <div class="filler" ng-class="{sidebarSmall: makeSmall()}" ng-cloak ng-controller="MainController">
+        <alert type="danger" ng-if="!isSupportedBrowser()" class="browser">This browser is not fully supported. Consider switching to Chrome.</alert>
+        <ng-include src="'templates/navbar.html'"></ng-include>
+        <div id="underNavContainer">
+            <div id="sidebar">
+                <ng-include src="'templates/sidebar.html'"></ng-include>
+            </div>
+            <div id="afterSideBarContainer">
+                <div class="spacing relative">
+                    <div id="content" ng-class="{filler: isDetailedView}" autoscroll="false" ui-view></div>
+                    <div ng-show="!isLoading() && graphDisplaying()" class="overview2" ng-controller="OverviewController">
+                        <div class="overview-item lined" ng-class="{activeSelect:isActive(i)}" ng-click="setActive(i)" ng-dblclick="goToDetailed(i)" ng-repeat="i in data.spectra | overviewFilter track by i.getHash()">
+                            <div class="top-bar">
+                                <strong>ID: {{i.id}}</strong>
+                                <p ng-show="i.hasRedshift()">z={{i.getFinalRedshift().toFixed(5)}}</p>
+                                <h4 style="display: inline;"><span class="pull-right label {{i.qopLabel}}">QOP: {{i.qop}}</span></h4>
+                            </div>
+                            <img class="under-bar unselectable" data-ng-src="{{getImage(i)}}">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="footer">
+            <ng-include src="'templates/footer.html'"></ng-include>
+        </div>
+    </div>
+</body>
+</html>

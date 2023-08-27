@@ -1,0 +1,70 @@
+<div ng-if="isLoading()" class="spinner"></div>
+<div ng-if="!isLoading()">
+    <div ng-if="shouldDisplayWelcome()" class="usage marketing container">
+
+        <h1 class="center-block welcomeText">Welcome to<img src="images/Marz2.png" width="260" alt="Marz: Manual and Assisted Redshifting"></h1>
+
+        <div class="row">
+            <div class="col-xs-4 introCard">
+                <div class="inner">
+                    <h2>New users</h2>
+                    <p>Please visit the <a ui-sref="usage">usage page</a>. It contains instructions, example FITS files, and useful Python code to import results!</p>
+                    <p>If you use Marz, please cite this work via the BibTeX available when clicking the blue button above. If you want to use high resolution graphs, the download arrow icon in the upper right corner of the plot in the Detailed view is what you want!</p>
+                    <p><a target="_blank" href="https://github.com/Samreay/Marz/releases/download/0.2.0/alldata_combined_runz_x12_b02.fits">Click here if you want an example FITS file straight away!</a></p>
+                </div>
+            </div>
+            <div class="col-xs-4 introCard">
+                <div class="inner">
+                    <h2>Returning users</h2>
+                    <p>You know the deal, drop in a FITS file and have fun. If you can think of any feature that would make your life easier, simply raise <a target="_blank" href="https://github.com/samreay/Marz/issues">raise a Github issue</a>, and I'll jump on it as soon as possible! The more detail and screenshots, the better!</p>
+                    <p>If you want to merge results, drag the FITS file and 2 <code>.mz</code> files in all at once.</p>
+                </div>
+            </div>
+            <div class="col-xs-4 introCard">
+                <div class="inner">
+                    <h2>The technically minded</h2>
+                    <p>Instructions for command line usage, running your own Marz server, licensing details and version history  can all be found in the <a target="_blank" href="https://github.com/Samreay/Marz">main README.md on Github.</a></p>
+                    <p>Formal documentation can be found <a target="_blank" href="http://www.sciencedirect.com/science/article/pii/S2213133716300166">here,</a> or on <a target="_blank" href="http://arxiv.org/abs/1603.09438">arXiv</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div ng-if="!ui.graphicalLayout && !shouldDisplayWelcome()">
+        <div class="table-responsive">
+            <table class="overviewTable table table-striped table-bordered table-hover table-condensed">
+                <thead>
+                <tr>
+                    <th class="col-md-1" style="cursor: pointer;" ng-click="setSort('id')">
+                        ID <span ng-show="isSortBy('id')"><i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-up': !sortOrder, 'glyphicon-chevron-down': sortOrder}"></i></span>
+                    </th>
+                    <th class="col-md-2" style="cursor: pointer;" ng-click="setSort('type')">
+                        Type <span ng-show="isSortBy('type')"><i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-up': !sortOrder, 'glyphicon-chevron-down': sortOrder}"></i></span>
+                    </th>
+                    <th class="col-md-2" style="cursor: pointer;" ng-click="setSort('finalTemplateID');">
+                        Template ID<span ng-show="isSortBy('finalTemplateID')"><i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-up': !sortOrder, 'glyphicon-chevron-down': sortOrder}"></i></span>
+                    </th>
+                    <th class="col-md-4" style="cursor: pointer;" ng-click="setSort('finalTemplateName');">
+                        Template<span ng-show="isSortBy('finalTemplateName')"><i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-up': !sortOrder, 'glyphicon-chevron-down': sortOrder}"></i></span>
+                    </th>
+                    <th class="col-md-1" style="cursor: pointer;" ng-click="setSort('finalZ');">
+                        Redshift <span ng-show="isSortBy('finalZ')"><i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-up': !sortOrder, 'glyphicon-chevron-down': sortOrder}"></i></span>
+                    </th>
+                    <th class="col-md-1" style="cursor: pointer;" ng-click="setSort('qop');">
+                        QOP <span ng-show="isSortBy('qop')"><i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-up': !sortOrder, 'glyphicon-chevron-down': sortOrder}"></i></span>
+                    </th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr ng-class="{activeSelect:isActive(i)}" ng-click="setActive(i)" ng-dblclick="goToDetailed(i)" ng-repeat="i in data.spectra | overviewFilter | orderBy:sortOverview:!sortOrder">
+                    <td>{{i.id}}</td>
+                    <td>{{i.type}}</td>
+                    <td>{{i.getFinalTemplateID()}}</td>
+                    <td>{{getName(i)}}</td>
+                    <td>{{i.getFinalRedshift().toFixed(5)}}</td>
+                    <td><span class="qopLabel label {{i.qopLabel}}">{{i.qop}}</span></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
