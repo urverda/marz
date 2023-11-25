@@ -145,6 +145,7 @@ self.matchTemplates = function(lambda, intensity, variance, type, helio, cmb) {
             return matchTemplate(templates, fft);
         }
     });
+    process.stdout.write(res[0]+'\n')
     var coalesced = self.coalesceResults(templateResults, type, subtracted, helio, cmb);
 
     return coalesced;
