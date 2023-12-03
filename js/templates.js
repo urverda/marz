@@ -209,7 +209,7 @@ function TemplateManager(process, shiftToMatch) {
         start_lambda: 1300,
         end_lambda: 39999,
         z_start: 0.,
-        z_end: 8.999,
+        z_end: 4.999,
         log_linear: false,      
         weights: {blank: 1.2, Transient: 1, SN_host: 0.9, WhiteDwarf: 1.3, StrongLens: 0.8, AGN_reverberation: 1.5, AGN_monitoring: 1.5, AGN: 1.5, QSO: 1.5,
             ClusterGalaxy_I: 1.1, ClusterGalaxy_II: 1.1, RadioGalaxy_I: 1.1, LRG: 1.1, ELG: 0.9, 'Photo-z': 1.1, FStar: 1.3, STAR: 1.3},
